@@ -15,7 +15,9 @@ export const handler = async (event) => {
       };
     }
 
-    const expiresIn = 900; // 15 minutes
+    const expiresIn = Number(process.env.SAS_EXPIRES_IN || 900); // seconds
+    const now = new Date();
+    const expiresAt = new Date(now.getTime() + expiresIn * 1000).toISOString(); // exact timestamp
 
     const getUrl = await getSignedUrl(
       s3,
@@ -32,7 +34,7 @@ export const handler = async (event) => {
     return {
       statusCode: 200,
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ getUrl, putUrl, expiresIn })
+      body: JSON.stringify({ getUrl, putUrl, expiresAt })
     };
   } catch (err) {
     console.error(err);

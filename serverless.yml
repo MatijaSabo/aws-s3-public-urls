@@ -1,0 +1,32 @@
+service: presigned-url-service
+
+frameworkVersion: "3"
+
+provider:
+  name: aws
+  runtime: nodejs20.x
+  region: us-east-1
+  stage: prod
+  environment:
+    AWS_REGION: ${self:provider.region}
+
+  iam:
+    role:
+      statements:
+        - Effect: Allow
+          Action:
+            - s3:GetObject
+            - s3:PutObject
+          Resource: arn:aws:s3:::your-bucket-name/*
+
+functions:
+  generateUrls:
+    handler: index.handler
+    timeout: 15
+    events:
+      - httpApi:
+          path: /generate
+          method: get
+
+plugins:
+  - serverless-offline

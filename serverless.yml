@@ -7,8 +7,6 @@ provider:
   runtime: nodejs20.x
   region: us-east-1
   stage: prod
-  environment:
-    AWS_REGION: ${self:provider.region}
 
   iam:
     role:
